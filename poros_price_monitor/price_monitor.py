@@ -89,30 +89,50 @@ def fetch_booking_price(page, hotel, checkin, checkout):
     url = build_booking_search_url(hotel["hotel"], checkin, checkout)
 
     print(f"Opening: {url}")
+
     page.goto(url, timeout=120000)
-    page.wait_for_timeout(9000)
+
+    page.wait_for_load_state("networkidle")
+    page.wait_for_timeout(10000)
 
     try:
-        page.click("button:has-text('Accept')", timeout=3000)
+        page.click('button:has-text("Accept")', timeout=3000)
         page.wait_for_timeout(2000)
-    except Exception:
+    except:
         pass
 
-    safe = hotel["hotel"].replace(" ", "_").replace("/", "_")
-    page.screenshot(path=str(ROOT / "debug" / f"{safe}.png"), full_page=True)
+    page.mouse.wheel(0, 4000)
+    page.wait_for_timeout(4000)
 
-    price = extract_price_from_page(page)
+    body = page.locator("body").inner_text()
 
-    if price:
-        print(f"FOUND PRICE for {hotel['hotel']}: {price}")
-    else:
-        print(f"NO PRICE FOUND for {hotel['hotel']}")
+    matches = re.findall(r'€\s?\d+', body)
 
-    return price, url
+    prices = []
 
+    for match in matches:
+        nums = re.findall(r'\d+', match)
 
-def save_results(results):
-    file_exists = CSV_FILE.exists()
+        if nums:
+            p = int(nums[0])
+
+            if 40 <= p <= 2000:
+                prices.append(p)
+
+    safe = hotel["hotel"].replace(" ", "_")
+
+    page.screenshot(
+        path=str(ROOT / "debug" / f"{safe}.png"),
+        full_page=True
+    )
+
+    if prices:
+        price = min(prices)
+        print(f"FOUND PRICE {hotel['hotel']}: {price}")
+        return price, url
+
+    print(f"NO PRICE FOUND {hotel['hotel']}")
+    return None, url
 
     with open(CSV_FILE, "a", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
