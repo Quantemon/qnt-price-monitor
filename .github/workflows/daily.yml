@@ -1,0 +1,29 @@
+name: Daily Price Monitor
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          cd poros_price_monitor
+          pip install -r requirements.txt
+
+      - name: Run monitor
+        run: |
+          cd poros_price_monitor
+          python price_monitor.py
