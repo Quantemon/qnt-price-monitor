@@ -43,31 +43,33 @@ async def fetch_price(page, url, label, timeout_seconds=20):
         await page.goto(url, wait_until="domcontentloaded", timeout=timeout_seconds * 1000)
         await page.wait_for_timeout(5000)
 
+        # click first "Show prices"
         try:
-            search_button = page.locator("button:has-text('Search')").first
-            await search_button.click(timeout=5000)
-            await page.wait_for_timeout(6000)
-        except Exception:
-            pass
-
-        try:
-            buttons = page.locator("button:has-text('Show prices'), a:has-text('Show prices')")
+            buttons = page.locator("button:has-text('Show prices')")
             count = await buttons.count()
+
             if count > 0:
-                await buttons.first.click(timeout=5000)
-                await page.wait_for_timeout(6000)
+                await buttons.first.click()
+                await page.wait_for_timeout(8000)
+
         except Exception:
             pass
 
         html = await page.content()
         text = BeautifulSoup(html, "lxml").get_text(" ", strip=True)
 
-        await page.screenshot(path=str(ROOT / "debug" / f"{safe}.png"), full_page=True)
+        await page.screenshot(
+            path=str(ROOT / "debug" / f"{safe}.png"),
+            full_page=True
+        )
 
         return extract_lowest_price(text)
 
     except Exception as e:
-        (ROOT / "debug" / f"{safe}_error.txt").write_text(str(e), encoding="utf-8")
+        (ROOT / "debug" / f"{safe}_error.txt").write_text(
+            str(e),
+            encoding="utf-8"
+        )
         return None
 
 def date_pairs(settings):
