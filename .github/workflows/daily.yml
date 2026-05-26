@@ -2,6 +2,7 @@ name: Daily Price Monitor
 
 on:
   workflow_dispatch:
+  push:
   schedule:
     - cron: "0 6 * * *"
 
@@ -39,6 +40,6 @@ jobs:
           git add poros_price_monitor/data/*
           git add poros_price_monitor/reports/*
 
-          git commit -m "Update price reports" || echo "No changes"
+          git commit -m "Update reports" || echo "No changes"
 
           git push
