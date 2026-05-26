@@ -41,10 +41,13 @@ def extract_lowest_price(text):
 async def fetch_price(page, url, label, timeout_seconds=35):
     try:
         await page.goto(url, wait_until="domcontentloaded", timeout=timeout_seconds*1000)
-        await page.wait_for_timeout(3500)
+        await page.wait_for_load_state("networkidle")
+await page.wait_for_timeout(5000)
         html = await page.content()
         text = BeautifulSoup(html, "lxml").get_text(" ", strip=True)
-        price = extract_lowest_price(text)
+        safe = re.sub(r"[^a-zA-Z0-9]+", "_", label)[:80]
+(ROOT / "debug" / f"{safe}.html").write_text(html, encoding="utf-8")
+await page.screenshot(path=str(ROOT / "debug" / f"{safe}.png"), full_page=True)
         if price is None:
             safe = re.sub(r"[^a-zA-Z0-9]+", "_", label)[:80]
             (ROOT / "debug" / f"{safe}.html").write_text(html, encoding="utf-8")
