@@ -1,164 +1,181 @@
-import asyncio, re, yaml
+import csv
+import re
+import time
 from pathlib import Path
-from datetime import date, timedelta
-import pandas as pd
-from bs4 import BeautifulSoup
-from playwright.async_api import async_playwright
+from datetime import datetime, timedelta
+
+from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).parent
-for p in ["data", "reports", "debug"]:
-    (ROOT / p).mkdir(exist_ok=True)
+(ROOT / "data").mkdir(exist_ok=True)
+(ROOT / "reports").mkdir(exist_ok=True)
+(ROOT / "debug").mkdir(exist_ok=True)
 
-PRICE_RE = re.compile(r"(?:€|EUR)\s*([0-9][0-9\.,]*)|([0-9][0-9\.,]*)\s*(?:€|EUR)", re.I)
+HOTELS = [
+    {
+        "hotel": "Poros Mood",
+        "hotel_type": "own",
+        "url": "https://www.booking.com/hotel/gr/poros-mood.html",
+    },
+    {
+        "hotel": "Manessi City Boutique Hotel",
+        "hotel_type": "competitor",
+        "url": "https://www.booking.com/hotel/gr/manessi.html",
+    },
+    {
+        "hotel": "Dionysos Hotel",
+        "hotel_type": "competitor",
+        "url": "https://www.booking.com/hotel/gr/dionysos-poros.html",
+    },
+    {
+        "hotel": "Hotel Saron",
+        "hotel_type": "competitor",
+        "url": "https://www.booking.com/hotel/gr/saron.html",
+    },
+    {
+        "hotel": "Dimitra Boutique Hotel",
+        "hotel_type": "competitor",
+        "url": "https://www.booking.com/hotel/gr/dimitra-poros-island.html",
+    },
+]
 
-def add_booking_params(url, checkin, checkout, adults=2, children=0):
-    base = url.split("?")[0]
-    return (
-        f"{base}"
-        f"?checkin={checkin.isoformat()}"
-        f"&checkout={checkout.isoformat()}"
-        f"&group_adults={adults}"
-        f"&group_children={children}"
-        f"&no_rooms=1"
-        f"&selected_currency=EUR"
-        f"&lang=en-gb"
-    )
+CSV_FILE = ROOT / "data" / "prices.csv"
+REPORT_FILE = ROOT / "reports" / "latest_report.html"
 
-def extract_lowest_price(text):
-    vals = []
-    for m in PRICE_RE.finditer(text.replace("\xa0", " ")):
-        raw = m.group(1) or m.group(2)
-        try:
-            price = float(raw.replace(".", "").replace(",", "."))
-            if 20 <= price <= 2000:
-                vals.append(price)
-        except ValueError:
-            pass
-    return min(vals) if vals else None
 
-async def fetch_price(page, url, label, timeout_seconds=20):
-    safe = re.sub(r"[^a-zA-Z0-9]+", "_", label)[:80]
-
-    try:
-        await page.goto(url, wait_until="domcontentloaded", timeout=timeout_seconds * 1000)
-        await page.wait_for_timeout(5000)
-
-        # click first "Show prices"
-        try:
-            buttons = page.locator("button:has-text('Show prices')")
-            count = await buttons.count()
-
-            if count > 0:
-                await buttons.first.click()
-                await page.wait_for_timeout(8000)
-
-        except Exception:
-            pass
-
-        html = await page.content()
-        text = BeautifulSoup(html, "lxml").get_text(" ", strip=True)
-
-        await page.screenshot(
-            path=str(ROOT / "debug" / f"{safe}.png"),
-            full_page=True
-        )
-
-        return extract_lowest_price(text)
-
-    except Exception as e:
-        (ROOT / "debug" / f"{safe}_error.txt").write_text(
-            str(e),
-            encoding="utf-8"
-        )
+def clean_price(text):
+    if not text:
         return None
 
-def date_pairs(settings):
-    today = date.today()
-    for i in range(int(settings["lookahead_days"])):
-        checkin = today + timedelta(days=i + 1)
-        if checkin.weekday() in set(settings.get("checkin_weekdays", list(range(7)))):
-            yield checkin, checkin + timedelta(days=int(settings["nights"]))
+    text = text.replace(",", "").replace(".", "")
+    numbers = re.findall(r"\d+", text)
 
-async def main():
-    cfg = yaml.safe_load((ROOT / "config.yaml").read_text(encoding="utf-8"))
-    s = cfg["settings"]
-    rows = []
+    if not numbers:
+        return None
 
-    async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=True)
-        context = await browser.new_context(locale="en-GB")
-        page = await context.new_page()
+    price = int(numbers[0])
 
-        for checkin, checkout in date_pairs(s):
-            for hotel in cfg["hotels"]:
-                if not hotel.get("booking_url"):
-                    continue
+    if 20 <= price <= 2000:
+        return price
 
-                url = add_booking_params(
-                    hotel["booking_url"],
-                    checkin,
-                    checkout,
-                    s.get("adults", 2),
-                    s.get("children", 0)
-                )
+    return None
 
-                price = await fetch_price(
-                    page,
-                    url,
-                    f"{hotel['name']}_booking_{checkin}",
-                    s.get("timeout_seconds", 20)
-                )
 
-                rows.append({
-                    "run_date": date.today().isoformat(),
-                    "hotel": hotel["name"],
-                    "hotel_type": hotel.get("type", "competitor"),
-                    "source": "Booking",
-                    "checkin": checkin.isoformat(),
-                    "checkout": checkout.isoformat(),
-                    "nights": s["nights"],
-                    "adults": s["adults"],
-                    "price_eur": price,
-                    "url": url
-                })
+def extract_price_from_text(text):
+    matches = re.findall(r"€\s?\d[\d,.]*|\d[\d,.]*\s?€", text)
 
-        await browser.close()
+    prices = []
+    for match in matches:
+        price = clean_price(match)
+        if price:
+            prices.append(price)
 
-    out = ROOT / "data" / "prices.csv"
-    df = pd.DataFrame(rows)
+    if not prices:
+        return None
 
-    if out.exists():
-        old = pd.read_csv(out)
-        df = pd.concat([old, df], ignore_index=True)
+    return min(prices)
 
-    df.to_csv(out, index=False)
-    make_report(df)
 
-def make_report(df):
-    latest = df[df["run_date"] == df["run_date"].max()].copy()
+def fetch_booking_price(page, hotel, checkin, checkout):
+    print(f"Opening: {hotel['url']}")
 
-    own = latest[(latest.hotel_type == "own") & latest.price_eur.notna()]
-    comp = latest[(latest.hotel_type != "own") & latest.price_eur.notna()]
+    page.goto(hotel["url"], timeout=120000)
+    page.wait_for_timeout(5000)
 
-    summary = []
-    for checkin in sorted(latest["checkin"].unique()):
-        op = own[own.checkin == checkin]["price_eur"]
-        cp = comp[comp.checkin == checkin]["price_eur"]
+    try:
+        page.click("button:has-text('Accept')", timeout=3000)
+    except Exception:
+        pass
 
-        if len(op) and len(cp):
-            summary.append({
-                "checkin": checkin,
-                "your_min_price": op.min(),
-                "competitor_min": cp.min(),
-                "competitor_avg": round(cp.mean(), 2),
-                "recommended_action": (
-                    "Αύξηση/κράτα"
-                    if op.min() < cp.mean() * 0.95
-                    else "Έλεγξε για μείωση"
-                    if op.min() > cp.mean() * 1.10
-                    else "OK"
-                )
-            })
+    try:
+        page.click("button:has-text('Search')", timeout=3000)
+        page.wait_for_timeout(3000)
+    except Exception:
+        pass
+
+    try:
+        page.click('input[placeholder*="Check-in"]', timeout=5000)
+        page.fill('input[placeholder*="Check-in"]', checkin)
+        page.fill('input[placeholder*="Check-out"]', checkout)
+        page.keyboard.press("Enter")
+        page.wait_for_timeout(5000)
+    except Exception as e:
+        print(f"Date fill failed: {e}")
+
+    try:
+        page.click('button:has-text("Search")', timeout=5000)
+        page.wait_for_timeout(10000)
+    except Exception:
+        pass
+
+    try:
+        buttons = page.locator("button:has-text('Show prices')")
+        if buttons.count() > 0:
+            buttons.first.click(timeout=5000)
+            page.wait_for_timeout(8000)
+    except Exception:
+        pass
+
+    safe_name = hotel["hotel"].replace(" ", "_").replace("/", "_")
+
+    page.screenshot(
+        path=str(ROOT / "debug" / f"{safe_name}.png"),
+        full_page=True,
+    )
+
+    html = page.content()
+    text = page.locator("body").inner_text()
+
+    price = extract_price_from_text(text)
+
+    if price:
+        print(f"FOUND PRICE for {hotel['hotel']}: {price}")
+    else:
+        print(f"NO PRICE FOUND for {hotel['hotel']}")
+
+    return price
+
+
+def save_results(results):
+    file_exists = CSV_FILE.exists()
+
+    with open(CSV_FILE, "a", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+
+        if not file_exists:
+            writer.writerow([
+                "run_date",
+                "hotel",
+                "hotel_type",
+                "source",
+                "checkin",
+                "checkout",
+                "nights",
+                "adults",
+                "price_eur",
+                "url",
+            ])
+
+        for row in results:
+            writer.writerow(row)
+
+
+def make_report(results):
+    rows_html = ""
+
+    for row in results:
+        rows_html += f"""
+        <tr>
+            <td>{row[0]}</td>
+            <td>{row[1]}</td>
+            <td>{row[2]}</td>
+            <td>{row[3]}</td>
+            <td>{row[4]}</td>
+            <td>{row[5]}</td>
+            <td>{row[8] if row[8] else ""}</td>
+            <td><a href="{row[9]}">Booking link</a></td>
+        </tr>
+        """
 
     html = f"""
     <html>
@@ -166,23 +183,94 @@ def make_report(df):
         <meta charset="utf-8">
         <title>Poros Price Monitor</title>
         <style>
-            body {{ font-family: Arial; margin: 32px; }}
+            body {{ font-family: Arial, sans-serif; margin: 32px; }}
             table {{ border-collapse: collapse; width: 100%; }}
-            td, th {{ border: 1px solid #ddd; padding: 8px; }}
-            th {{ background: #f3f3f3; }}
+            th, td {{ border: 1px solid #ddd; padding: 8px; }}
+            th {{ background: #f2f2f2; }}
         </style>
     </head>
     <body>
         <h1>Poros Price Monitor</h1>
-        <h2>Προτεινόμενες κινήσεις</h2>
-        {pd.DataFrame(summary).to_html(index=False) if summary else "<p>Δεν βρέθηκαν αρκετές τιμές.</p>"}
         <h2>Τελευταίες τιμές Booking</h2>
-        {latest.sort_values(["checkin", "hotel"]).to_html(index=False)}
+        <table>
+            <tr>
+                <th>Run date</th>
+                <th>Hotel</th>
+                <th>Type</th>
+                <th>Source</th>
+                <th>Check-in</th>
+                <th>Check-out</th>
+                <th>Price EUR</th>
+                <th>URL</th>
+            </tr>
+            {rows_html}
+        </table>
     </body>
     </html>
     """
 
-    (ROOT / "reports" / "latest_report.html").write_text(html, encoding="utf-8")
+    REPORT_FILE.write_text(html, encoding="utf-8")
+
+
+def main():
+    run_date = datetime.now().strftime("%Y-%m-%d")
+
+    checkin_date = (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")
+    checkout_date = (datetime.now() + timedelta(days=2)).strftime("%Y-%m-%d")
+
+    results = []
+
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        page = browser.new_page(locale="en-GB")
+
+        for hotel in HOTELS:
+            try:
+                price = fetch_booking_price(
+                    page,
+                    hotel,
+                    checkin_date,
+                    checkout_date,
+                )
+
+                results.append([
+                    run_date,
+                    hotel["hotel"],
+                    hotel["hotel_type"],
+                    "Booking",
+                    checkin_date,
+                    checkout_date,
+                    1,
+                    2,
+                    price,
+                    hotel["url"],
+                ])
+
+            except Exception as e:
+                print(f"ERROR for {hotel['hotel']}: {e}")
+
+                results.append([
+                    run_date,
+                    hotel["hotel"],
+                    hotel["hotel_type"],
+                    "Booking",
+                    checkin_date,
+                    checkout_date,
+                    1,
+                    2,
+                    None,
+                    hotel["url"],
+                ])
+
+            time.sleep(2)
+
+        browser.close()
+
+    save_results(results)
+    make_report(results)
+
+    print("DONE")
+
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
