@@ -4,635 +4,83 @@
         <meta charset="utf-8">
         <title>Poros Price Monitor</title>
         <style>
-            body { font-family: Arial; margin: 32px; }
+            body { font-family: Arial, sans-serif; margin: 32px; }
             table { border-collapse: collapse; width: 100%; }
-            td, th { border: 1px solid #ddd; padding: 8px; }
-            th { background: #f3f3f3; }
+            th, td { border: 1px solid #ddd; padding: 8px; }
+            th { background: #f2f2f2; }
         </style>
     </head>
     <body>
         <h1>Poros Price Monitor</h1>
-        <h2>Προτεινόμενες κινήσεις</h2>
-        <p>Δεν βρέθηκαν αρκετές τιμές.</p>
         <h2>Τελευταίες τιμές Booking</h2>
-        <table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th>run_date</th>
-      <th>hotel</th>
-      <th>hotel_type</th>
-      <th>source</th>
-      <th>checkin</th>
-      <th>checkout</th>
-      <th>nights</th>
-      <th>adults</th>
-      <th>price_eur</th>
-      <th>url</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Dimitra Boutique Hotel</td>
-      <td>competitor</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://www.booking.com/hotel/gr/dimitra-poros-island.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Dimitra Boutique Hotel</td>
-      <td>competitor</td>
-      <td>Official</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://dimitrahotelporos.reserve-online.net/about</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Dimitra Boutique Hotel</td>
-      <td>competitor</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://www.booking.com/hotel/gr/dimitra-poros-island.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Dimitra Boutique Hotel</td>
-      <td>competitor</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://www.booking.com/hotel/gr/dimitra-poros-island.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Dimitra Boutique Hotel</td>
-      <td>competitor</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://www.booking.com/hotel/gr/dimitra-poros-island.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Dimitra Boutique Hotel</td>
-      <td>competitor</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://www.booking.com/hotel/gr/dimitra-poros-island.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Dimitra Boutique Hotel</td>
-      <td>competitor</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://www.booking.com/hotel/gr/dimitra-poros-island.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Dimitra Boutique Hotel</td>
-      <td>competitor</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://www.booking.com/hotel/gr/dimitra-poros-island.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Dimitra Boutique Hotel</td>
-      <td>competitor</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://www.booking.com/hotel/gr/dimitra-poros-island.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Dimitra Boutique Hotel</td>
-      <td>competitor</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>None</td>
-      <td>https://www.booking.com/hotel/gr/dimitra-poros-island.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Dionysos Hotel</td>
-      <td>competitor</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://www.booking.com/hotel/gr/dionysos-poros.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Dionysos Hotel</td>
-      <td>competitor</td>
-      <td>Official</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://www.hoteldionysos.eu/</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Dionysos Hotel</td>
-      <td>competitor</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://www.booking.com/hotel/gr/dionysos-poros.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Dionysos Hotel</td>
-      <td>competitor</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://www.booking.com/hotel/gr/dionysos-poros.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Dionysos Hotel</td>
-      <td>competitor</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://www.booking.com/hotel/gr/dionysos-poros.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Dionysos Hotel</td>
-      <td>competitor</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://www.booking.com/hotel/gr/dionysos-poros.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Dionysos Hotel</td>
-      <td>competitor</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://www.booking.com/hotel/gr/dionysos-poros.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Dionysos Hotel</td>
-      <td>competitor</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://www.booking.com/hotel/gr/dionysos-poros.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Dionysos Hotel</td>
-      <td>competitor</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://www.booking.com/hotel/gr/dionysos-poros.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Dionysos Hotel</td>
-      <td>competitor</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>None</td>
-      <td>https://www.booking.com/hotel/gr/dionysos-poros.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Hotel Saron</td>
-      <td>competitor</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://www.booking.com/hotel/gr/saron.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Hotel Saron</td>
-      <td>competitor</td>
-      <td>Official</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://www.hotelsaronporos.com/</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Hotel Saron</td>
-      <td>competitor</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://www.booking.com/hotel/gr/saron.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Hotel Saron</td>
-      <td>competitor</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://www.booking.com/hotel/gr/saron.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Hotel Saron</td>
-      <td>competitor</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://www.booking.com/hotel/gr/saron.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Hotel Saron</td>
-      <td>competitor</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://www.booking.com/hotel/gr/saron.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Hotel Saron</td>
-      <td>competitor</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://www.booking.com/hotel/gr/saron.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Hotel Saron</td>
-      <td>competitor</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://www.booking.com/hotel/gr/saron.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Hotel Saron</td>
-      <td>competitor</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://www.booking.com/hotel/gr/saron.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Hotel Saron</td>
-      <td>competitor</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>None</td>
-      <td>https://www.booking.com/hotel/gr/saron.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Manessi City Boutique Hotel</td>
-      <td>competitor</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://www.booking.com/hotel/gr/manessi.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Manessi City Boutique Hotel</td>
-      <td>competitor</td>
-      <td>Official</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://manessihotel.reserve-online.net/</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Manessi City Boutique Hotel</td>
-      <td>competitor</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://www.booking.com/hotel/gr/manessi.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Manessi City Boutique Hotel</td>
-      <td>competitor</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://www.booking.com/hotel/gr/manessi.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Manessi City Boutique Hotel</td>
-      <td>competitor</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://www.booking.com/hotel/gr/manessi.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Manessi City Boutique Hotel</td>
-      <td>competitor</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://www.booking.com/hotel/gr/manessi.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Manessi City Boutique Hotel</td>
-      <td>competitor</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://www.booking.com/hotel/gr/manessi.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Manessi City Boutique Hotel</td>
-      <td>competitor</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://www.booking.com/hotel/gr/manessi.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Manessi City Boutique Hotel</td>
-      <td>competitor</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://www.booking.com/hotel/gr/manessi.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Manessi City Boutique Hotel</td>
-      <td>competitor</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>None</td>
-      <td>https://www.booking.com/hotel/gr/manessi.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Poros Mood</td>
-      <td>own</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://www.booking.com/hotel/gr/poros-mood.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Poros Mood</td>
-      <td>own</td>
-      <td>Official</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://www.porosmood.gr/en/</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Poros Mood</td>
-      <td>own</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://www.booking.com/hotel/gr/poros-mood.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Poros Mood</td>
-      <td>own</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://www.booking.com/hotel/gr/poros-mood.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Poros Mood</td>
-      <td>own</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://www.booking.com/hotel/gr/poros-mood.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Poros Mood</td>
-      <td>own</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://www.booking.com/hotel/gr/poros-mood.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Poros Mood</td>
-      <td>own</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://www.booking.com/hotel/gr/poros-mood.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Poros Mood</td>
-      <td>own</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://www.booking.com/hotel/gr/poros-mood.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Poros Mood</td>
-      <td>own</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>NaN</td>
-      <td>https://www.booking.com/hotel/gr/poros-mood.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-    <tr>
-      <td>2026-05-26</td>
-      <td>Poros Mood</td>
-      <td>own</td>
-      <td>Booking</td>
-      <td>2026-05-27</td>
-      <td>2026-05-28</td>
-      <td>1</td>
-      <td>2</td>
-      <td>None</td>
-      <td>https://www.booking.com/hotel/gr/poros-mood.html?checkin=2026-05-27&amp;checkout=2026-05-28&amp;group_adults=2&amp;group_children=0&amp;no_rooms=1&amp;selected_currency=EUR&amp;lang=en-gb</td>
-    </tr>
-  </tbody>
-</table>
+        <table>
+            <tr>
+                <th>Run date</th>
+                <th>Hotel</th>
+                <th>Type</th>
+                <th>Source</th>
+                <th>Check-in</th>
+                <th>Check-out</th>
+                <th>Price EUR</th>
+                <th>URL</th>
+            </tr>
+            
+        <tr>
+            <td>2026-05-26</td>
+            <td>Poros Mood</td>
+            <td>own</td>
+            <td>Booking</td>
+            <td>2026-05-27</td>
+            <td>2026-05-28</td>
+            <td></td>
+            <td><a href="https://www.booking.com/hotel/gr/poros-mood.html">Booking link</a></td>
+        </tr>
+        
+        <tr>
+            <td>2026-05-26</td>
+            <td>Manessi City Boutique Hotel</td>
+            <td>competitor</td>
+            <td>Booking</td>
+            <td>2026-05-27</td>
+            <td>2026-05-28</td>
+            <td></td>
+            <td><a href="https://www.booking.com/hotel/gr/manessi.html">Booking link</a></td>
+        </tr>
+        
+        <tr>
+            <td>2026-05-26</td>
+            <td>Dionysos Hotel</td>
+            <td>competitor</td>
+            <td>Booking</td>
+            <td>2026-05-27</td>
+            <td>2026-05-28</td>
+            <td></td>
+            <td><a href="https://www.booking.com/hotel/gr/dionysos-poros.html">Booking link</a></td>
+        </tr>
+        
+        <tr>
+            <td>2026-05-26</td>
+            <td>Hotel Saron</td>
+            <td>competitor</td>
+            <td>Booking</td>
+            <td>2026-05-27</td>
+            <td>2026-05-28</td>
+            <td></td>
+            <td><a href="https://www.booking.com/hotel/gr/saron.html">Booking link</a></td>
+        </tr>
+        
+        <tr>
+            <td>2026-05-26</td>
+            <td>Dimitra Boutique Hotel</td>
+            <td>competitor</td>
+            <td>Booking</td>
+            <td>2026-05-27</td>
+            <td>2026-05-28</td>
+            <td></td>
+            <td><a href="https://www.booking.com/hotel/gr/dimitra-poros-island.html">Booking link</a></td>
+        </tr>
+        
+        </table>
     </body>
     </html>
     
