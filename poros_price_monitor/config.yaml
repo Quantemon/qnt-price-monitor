@@ -1,0 +1,37 @@
+settings:
+  currency: "EUR"
+  adults: 2
+  children: 0
+  nights: 1
+  lookahead_days: 30
+  checkin_weekdays: [0,1,2,3,4,5,6]
+  timeout_seconds: 35
+  headless: true
+
+hotels:
+  - name: "Poros Mood"
+    type: "own"
+    official_url: "https://www.porosmood.gr/en/"
+    booking_url: "https://www.booking.com/hotel/gr/poros-mood.html"
+
+  - name: "Manessi City Boutique Hotel"
+    type: "competitor"
+    official_url: "https://manessi.gr/"
+    official_booking_engine: "https://manessihotel.reserve-online.net/"
+    booking_url: "https://www.booking.com/hotel/gr/manessi.html"
+
+  - name: "Dionysos Hotel"
+    type: "competitor"
+    official_url: "https://www.hoteldionysos.eu/"
+    booking_url: "https://www.booking.com/hotel/gr/dionysos-poros.html"
+
+  - name: "Hotel Saron"
+    type: "competitor"
+    official_url: "https://www.hotelsaronporos.com/"
+    booking_url: "https://www.booking.com/hotel/gr/saron.html"
+
+  - name: "Dimitra Boutique Hotel"
+    type: "competitor"
+    official_url: "https://www.dimitrahotelporos.gr/en/"
+    official_booking_engine: "https://dimitrahotelporos.reserve-online.net/about"
+    booking_url: "https://www.booking.com/hotel/gr/dimitra-poros-island.html"
