@@ -3,9 +3,9 @@ settings:
   adults: 2
   children: 0
   nights: 1
-  lookahead_days: 30
+  lookahead_days: 1
   checkin_weekdays: [0,1,2,3,4,5,6]
-  timeout_seconds: 35
+  timeout_seconds: 12
   headless: true
 
 hotels:
