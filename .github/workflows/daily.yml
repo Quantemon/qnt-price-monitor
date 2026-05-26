@@ -26,7 +26,19 @@ jobs:
           python -m playwright install chromium
 
       - name: Run monitor
-        timeout-minutes: 5
+        timeout-minutes: 10
         run: |
           cd poros_price_monitor
           python price_monitor.py
+
+      - name: Commit reports
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
+
+          git add poros_price_monitor/data/*
+          git add poros_price_monitor/reports/*
+
+          git commit -m "Update price reports" || echo "No changes"
+
+          git push
