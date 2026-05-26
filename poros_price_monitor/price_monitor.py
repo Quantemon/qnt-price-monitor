@@ -40,14 +40,25 @@ def extract_lowest_price(text):
 
 async def fetch_price(page, url, label, timeout_seconds=20):
     safe = re.sub(r"[^a-zA-Z0-9]+", "_", label)[:80]
+
     try:
         await page.goto(url, wait_until="domcontentloaded", timeout=timeout_seconds * 1000)
-        await page.wait_for_timeout(6000)
+        await page.wait_for_timeout(4000)
+
+        # Booking sometimes shows “Show prices” buttons before loading prices.
+        try:
+            buttons = page.locator("button:has-text('Show prices'), a:has-text('Show prices')")
+            count = await buttons.count()
+            if count > 0:
+                await buttons.first.click(timeout=5000)
+                await page.wait_for_timeout(6000)
+        except Exception:
+            pass
 
         html = await page.content()
         text = BeautifulSoup(html, "lxml").get_text(" ", strip=True)
 
-        (ROOT / "debug" / f"{safe}.html").write_text(html, encoding="utf-8")
+        # Save screenshots for debugging.
         await page.screenshot(path=str(ROOT / "debug" / f"{safe}.png"), full_page=True)
 
         return extract_lowest_price(text)
