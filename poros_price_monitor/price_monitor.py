@@ -1,7 +1,6 @@
 import asyncio, re, yaml
 from pathlib import Path
 from datetime import date, timedelta
-from urllib.parse import urlencode, urlparse, parse_qsl, urlunparse
 import pandas as pd
 from bs4 import BeautifulSoup
 from playwright.async_api import async_playwright
@@ -13,18 +12,17 @@ for p in ["data", "reports", "debug"]:
 PRICE_RE = re.compile(r"(?:€|EUR)\s*([0-9][0-9\.,]*)|([0-9][0-9\.,]*)\s*(?:€|EUR)", re.I)
 
 def add_booking_params(url, checkin, checkout, adults=2, children=0):
-    parsed = urlparse(url)
-    q = dict(parse_qsl(parsed.query))
-    q.update({
-        "checkin": checkin.isoformat(),
-        "checkout": checkout.isoformat(),
-        "group_adults": str(adults),
-        "group_children": str(children),
-        "no_rooms": "1",
-        "selected_currency": "EUR",
-        "lang": "en-gb",
-    })
-    return urlunparse(parsed._replace(query=urlencode(q)))
+    base = url.split("?")[0]
+    return (
+        f"{base}"
+        f"?checkin={checkin.isoformat()}"
+        f"&checkout={checkout.isoformat()}"
+        f"&group_adults={adults}"
+        f"&group_children={children}"
+        f"&no_rooms=1"
+        f"&selected_currency=EUR"
+        f"&lang=en-gb"
+    )
 
 def extract_lowest_price(text):
     vals = []
@@ -43,9 +41,15 @@ async def fetch_price(page, url, label, timeout_seconds=20):
 
     try:
         await page.goto(url, wait_until="domcontentloaded", timeout=timeout_seconds * 1000)
-        await page.wait_for_timeout(4000)
+        await page.wait_for_timeout(5000)
 
-        # Booking sometimes shows “Show prices” buttons before loading prices.
+        try:
+            search_button = page.locator("button:has-text('Search')").first
+            await search_button.click(timeout=5000)
+            await page.wait_for_timeout(6000)
+        except Exception:
+            pass
+
         try:
             buttons = page.locator("button:has-text('Show prices'), a:has-text('Show prices')")
             count = await buttons.count()
@@ -58,7 +62,6 @@ async def fetch_price(page, url, label, timeout_seconds=20):
         html = await page.content()
         text = BeautifulSoup(html, "lxml").get_text(" ", strip=True)
 
-        # Save screenshots for debugging.
         await page.screenshot(path=str(ROOT / "debug" / f"{safe}.png"), full_page=True)
 
         return extract_lowest_price(text)
