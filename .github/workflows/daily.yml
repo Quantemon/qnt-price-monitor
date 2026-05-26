@@ -8,9 +8,10 @@ on:
 
 jobs:
   monitor:
-    runs-on: ubuntu-latest
     permissions:
       contents: write
+
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
@@ -41,8 +42,12 @@ jobs:
 
           rm -f poros_price_monitor/debug/*.html
 
-          git add poros_price_monitor/data/* poros_price_monitor/reports/* poros_price_monitor/debug/*.png
+          git add poros_price_monitor/data/*
+          git add poros_price_monitor/reports/*
+          git add poros_price_monitor/debug/*.png
 
           git commit -m "Update reports" || echo "No changes"
+
+          git pull --rebase origin main
 
           git push
