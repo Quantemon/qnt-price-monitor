@@ -8,6 +8,7 @@ from urllib.parse import urlencode
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).parent
+
 (ROOT / "data").mkdir(exist_ok=True)
 (ROOT / "reports").mkdir(exist_ok=True)
 (ROOT / "debug").mkdir(exist_ok=True)
@@ -24,20 +25,6 @@ HOTELS = [
 ]
 
 
-def clean_price(text):
-    if not text:
-        return None
-
-    text = text.replace(",", "").replace(".", "")
-    nums = re.findall(r"\d+", text)
-
-    if not nums:
-        return None
-
-    price = int(nums[0])
-    return price if 40 <= price <= 2000 else None
-
-
 def build_booking_search_url(hotel_name, checkin, checkout):
     params = {
         "ss": f"{hotel_name} Poros Greece",
@@ -50,43 +37,30 @@ def build_booking_search_url(hotel_name, checkin, checkout):
         "lang": "en-gb",
     }
 
-    return "https://www.booking.com/searchresults.html?" + urlencode(params)
+    return (
+        "https://www.booking.com/searchresults.html?"
+        + urlencode(params)
+    )
 
 
-def extract_price_from_page(page):
-    selectors = [
-        '[data-testid="price-and-discounted-price"]',
-        '[data-testid="availability-rate-information"]',
-        'span:has-text("€")',
-    ]
+def clean_price(text):
+    nums = re.findall(r"\d+", text.replace(",", ""))
 
-    for selector in selectors:
-        try:
-            items = page.locator(selector)
-            count = items.count()
+    for n in nums:
+        p = int(n)
 
-            for i in range(min(count, 10)):
-                text = items.nth(i).inner_text(timeout=3000)
-                price = clean_price(text)
-                if price:
-                    return price
-        except Exception:
-            pass
+        if 40 <= p <= 2000:
+            return p
 
-    text = page.locator("body").inner_text()
-    matches = re.findall(r"€\s?\d[\d,.]*|\d[\d,.]*\s?€|EUR\s?\d[\d,.]*", text)
-
-    prices = []
-    for match in matches:
-        p = clean_price(match)
-        if p:
-            prices.append(p)
-
-    return min(prices) if prices else None
+    return None
 
 
 def fetch_booking_price(page, hotel, checkin, checkout):
-    url = build_booking_search_url(hotel["hotel"], checkin, checkout)
+    url = build_booking_search_url(
+        hotel["hotel"],
+        checkin,
+        checkout
+    )
 
     print(f"Opening: {url}")
 
@@ -102,22 +76,19 @@ def fetch_booking_price(page, hotel, checkin, checkout):
         pass
 
     page.mouse.wheel(0, 4000)
-    page.wait_for_timeout(4000)
+    page.wait_for_timeout(5000)
 
     body = page.locator("body").inner_text()
 
-    matches = re.findall(r'€\s?\d+', body)
+    matches = re.findall(r'€\s?\d+|\d+\s?€', body)
 
     prices = []
 
     for match in matches:
-        nums = re.findall(r'\d+', match)
+        p = clean_price(match)
 
-        if nums:
-            p = int(nums[0])
-
-            if 40 <= p <= 2000:
-                prices.append(p)
+        if p:
+            prices.append(p)
 
     safe = hotel["hotel"].replace(" ", "_")
 
@@ -128,11 +99,18 @@ def fetch_booking_price(page, hotel, checkin, checkout):
 
     if prices:
         price = min(prices)
+
         print(f"FOUND PRICE {hotel['hotel']}: {price}")
+
         return price, url
 
     print(f"NO PRICE FOUND {hotel['hotel']}")
+
     return None, url
+
+
+def save_results(results):
+    file_exists = CSV_FILE.exists()
 
     with open(CSV_FILE, "a", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
@@ -165,8 +143,8 @@ def make_report(results):
             <td>{r[2]}</td>
             <td>{r[4]}</td>
             <td>{r[5]}</td>
-            <td>{r[8] if r[8] else ""}</td>
-            <td><a href="{r[9]}">Booking</a></td>
+            <td>{r[8]}</td>
+            <td><a href="{r[9]}">Open</a></td>
         </tr>
         """
 
@@ -175,26 +153,22 @@ def make_report(results):
     <head>
         <meta charset="utf-8">
         <title>Poros Price Monitor</title>
-        <style>
-            body {{ font-family: Arial, sans-serif; margin: 32px; }}
-            table {{ border-collapse: collapse; width: 100%; }}
-            th, td {{ border: 1px solid #ddd; padding: 8px; }}
-            th {{ background: #f2f2f2; }}
-        </style>
     </head>
+
     <body>
         <h1>Poros Price Monitor</h1>
-        <h2>Τελευταίες τιμές Booking</h2>
-        <table>
+
+        <table border="1" cellpadding="6">
             <tr>
-                <th>Run date</th>
+                <th>Date</th>
                 <th>Hotel</th>
                 <th>Type</th>
-                <th>Check-in</th>
-                <th>Check-out</th>
+                <th>Checkin</th>
+                <th>Checkout</th>
                 <th>Price EUR</th>
                 <th>URL</th>
             </tr>
+
             {rows}
         </table>
     </body>
@@ -206,22 +180,44 @@ def make_report(results):
 
 def main():
     run_date = datetime.now().strftime("%Y-%m-%d")
-    checkin = (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")
-    checkout = (datetime.now() + timedelta(days=2)).strftime("%Y-%m-%d")
+
+    checkin = (
+        datetime.now() + timedelta(days=1)
+    ).strftime("%Y-%m-%d")
+
+    checkout = (
+        datetime.now() + timedelta(days=2)
+    ).strftime("%Y-%m-%d")
 
     results = []
 
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
-        page = browser.new_page(locale="en-GB")
+
+        page = browser.new_page(
+            locale="en-GB",
+            viewport={"width": 1600, "height": 4000},
+        )
 
         for hotel in HOTELS:
             try:
-                price, url = fetch_booking_price(page, hotel, checkin, checkout)
+                price, url = fetch_booking_price(
+                    page,
+                    hotel,
+                    checkin,
+                    checkout
+                )
+
             except Exception as e:
-                print(f"ERROR for {hotel['hotel']}: {e}")
+                print(f"ERROR: {hotel['hotel']} -> {e}")
+
                 price = None
-                url = build_booking_search_url(hotel["hotel"], checkin, checkout)
+
+                url = build_booking_search_url(
+                    hotel["hotel"],
+                    checkin,
+                    checkout
+                )
 
             results.append([
                 run_date,
@@ -241,7 +237,9 @@ def main():
         browser.close()
 
     save_results(results)
+
     make_report(results)
+
     print("DONE")
 
 
