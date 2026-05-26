@@ -1,0 +1,11 @@
+run_date,hotel,hotel_type,source,checkin,checkout,nights,adults,price_eur,url
+2026-05-26,Poros Mood,own,Booking,2026-05-27,2026-05-28,1,2,,https://www.booking.com/hotel/gr/poros-mood.html?checkin=2026-05-27&checkout=2026-05-28&group_adults=2&group_children=0&no_rooms=1&selected_currency=EUR&lang=en-gb
+2026-05-26,Poros Mood,own,Official,2026-05-27,2026-05-28,1,2,,https://www.porosmood.gr/en/
+2026-05-26,Manessi City Boutique Hotel,competitor,Booking,2026-05-27,2026-05-28,1,2,,https://www.booking.com/hotel/gr/manessi.html?checkin=2026-05-27&checkout=2026-05-28&group_adults=2&group_children=0&no_rooms=1&selected_currency=EUR&lang=en-gb
+2026-05-26,Manessi City Boutique Hotel,competitor,Official,2026-05-27,2026-05-28,1,2,,https://manessihotel.reserve-online.net/
+2026-05-26,Dionysos Hotel,competitor,Booking,2026-05-27,2026-05-28,1,2,,https://www.booking.com/hotel/gr/dionysos-poros.html?checkin=2026-05-27&checkout=2026-05-28&group_adults=2&group_children=0&no_rooms=1&selected_currency=EUR&lang=en-gb
+2026-05-26,Dionysos Hotel,competitor,Official,2026-05-27,2026-05-28,1,2,,https://www.hoteldionysos.eu/
+2026-05-26,Hotel Saron,competitor,Booking,2026-05-27,2026-05-28,1,2,,https://www.booking.com/hotel/gr/saron.html?checkin=2026-05-27&checkout=2026-05-28&group_adults=2&group_children=0&no_rooms=1&selected_currency=EUR&lang=en-gb
+2026-05-26,Hotel Saron,competitor,Official,2026-05-27,2026-05-28,1,2,,https://www.hotelsaronporos.com/
+2026-05-26,Dimitra Boutique Hotel,competitor,Booking,2026-05-27,2026-05-28,1,2,,https://www.booking.com/hotel/gr/dimitra-poros-island.html?checkin=2026-05-27&checkout=2026-05-28&group_adults=2&group_children=0&no_rooms=1&selected_currency=EUR&lang=en-gb
+2026-05-26,Dimitra Boutique Hotel,competitor,Official,2026-05-27,2026-05-28,1,2,,https://dimitrahotelporos.reserve-online.net/about
